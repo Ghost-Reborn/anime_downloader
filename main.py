@@ -5,7 +5,7 @@
 # chronological order
 #
 
-from operator import contains
+from re import sub
 from urllib.request import urlopen
 from urllib.parse import quote
 from bs4 import BeautifulSoup
@@ -33,3 +33,8 @@ for divs in saga_main_divs:
     if "class" in divs.attrs:
         continue
     print(str(divs.h2.text))
+    saga_sub_divs = divs.select("div")
+    for sub_divs in saga_sub_divs:
+        if(sub_divs.has_attr("class")):
+            if(sub_divs.get("class")[0] == "list-item"):
+                print(sub_divs.select("div:nth-child(3)")[0].text)
