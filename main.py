@@ -5,7 +5,6 @@
 # chronological order
 #
 
-from re import sub
 from urllib.request import urlopen
 from urllib.parse import quote
 from bs4 import BeautifulSoup
@@ -15,6 +14,11 @@ anime_scraper_base_url = "https://www.animechrono.com"
 anime_scraper_search_url = anime_scraper_base_url + "/search?q="
 anime_name = input("Enter anime: ")
 anime_combined_url = anime_scraper_search_url + quote(anime_name)
+
+# Not to misuse the power of scraping
+# Create a cache file
+# TODO if cache file is present, dont search in animechrono
+cache_file = open("cache.txt", "w")
 
 # Connect and scrape GUIDE url
 # TODO get full search result, and show as selectable for the user
@@ -32,9 +36,11 @@ saga_main_divs = soup.select("#wrapper > div:nth-child(2) > div > div.div-block-
 for divs in saga_main_divs:
     if "class" in divs.attrs:
         continue
-    print(str(divs.h2.text))
     saga_sub_divs = divs.select("div")
     for sub_divs in saga_sub_divs:
         if(sub_divs.has_attr("class")):
             if(sub_divs.get("class")[0] == "list-item"):
-                print(sub_divs.select("div:nth-child(3)")[0].text)
+                cache_file.write(sub_divs.select("div:nth-child(3)")[0].text)
+                cache_file.write("\n")
+
+cache_file.close()
